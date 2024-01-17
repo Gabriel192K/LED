@@ -1,8 +1,8 @@
 # LED
-- LED implementation for easy LED interfacing
+- LED library for basic LED control
 
 ## Key features
-- Arduino IDE & Microchip Studio IDE compatible
+- Microchip Studio IDE compatible
 - Easy timing configurable behaviour (interval blinking or onTime/offTime blinking)
 - Set function to dinamically configure the timings while running
 - Easy to use, just the run() function in loop
