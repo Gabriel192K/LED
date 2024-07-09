@@ -2,8 +2,15 @@
 #define __LED_H__
 
 /* Dependecies */
+#if defined(ARDUINO)
+#include <GPIO.h>
+#else
 #include "..\GPIO\GPIO.h"
+#endif
+#include <Time.h>
+#else
 #include "..\Time\Time.h"
+#endif
 
 class LED
 {
