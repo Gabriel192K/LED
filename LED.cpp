@@ -4,7 +4,7 @@
 /*!
  * @brief  LED constructor
  * @param  gpio
- *         The GPIO object
+ *         Pointer to the GPIO object
  */
 LED::LED(GPIO* gpio)
 {
@@ -20,9 +20,9 @@ LED::~LED()
 }
 
 /*!
- * @brief  Begins the LED implementation using a fixed interval
+ * @brief  Begins the LED implementation using a single interval
  * @param  interval
- *         The interval of LED blink (example: for interval 1000 it will be 500 ms OFF and 500 ms ON)
+ *         The interval of LED blink
  * @return True if was succesfull, otherwise false if already began
  */
 void LED::begin(const uint32_t interval)
@@ -31,7 +31,7 @@ void LED::begin(const uint32_t interval)
 }
 
 /*!
- * @brief  Begins the LED implementation using separate on and off times
+ * @brief  Begins the LED implementation using on and off times
  * @param  onTime
  *         The interval of LED blink ON time
  * @param  offTime
@@ -54,7 +54,7 @@ void LED::begin(const uint32_t onTime, const uint32_t offTime)
 /*!
  * @brief  Sets the LED blink interval
  * @param  interval
- *         The interval of LED blink (example: for interval 1000 it will be 500 ms OFF and 500 ms ON)
+ *         The interval of LED blink
  */
 void LED::set(const uint32_t interval)
 {
@@ -73,27 +73,28 @@ void LED::set(const uint32_t onTime, const uint32_t offTime)
 	this->onTime = onTime;
 	this->offTime = offTime;
 	this->interval = 0;
+	this->nextTime = this->offTime;
 }
 
 /*!
- * @brief  Runs the LED implementation (no blocking as it uses timer for timekeeping)
+ * @brief  Runs the LED implementation
  */
 void LED::run(void)
 {
 	const uint32_t currentTime = Time.milliseconds();
 
-	if ((currentTime - this->previousTime) < this->interval)
+	if (currentTime < this->nextTime)
 		return;
 
-	this->interval = gpio->read() == HIGH ? offTime : onTime;
+	this->interval = (gpio->read() == HIGH) ? offTime : onTime;
 	this->gpio->write(TOGGLE);
 
-	this->previousTime = currentTime;
+	this->nextTime = currentTime + this->interval;
 }
 
 /*!
- * @brief  Ends the LED implementation
- * @return True if was succesfull, otherwise false if did not began
+ * @brief  Stops the LED implementation
+ * @return True if was succesfull, otherwise false if already ended
  */
 const uint8_t LED::end(void)
 {
